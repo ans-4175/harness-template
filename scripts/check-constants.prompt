@@ -1,0 +1,35 @@
+Audit the files changed in this branch for magic strings & numbers that should be named constants. This is a read-only audit — REPORT only, do NOT edit code unless the violation is clear & trivial.
+
+## Scope
+
+Files changed relative to the merge-base with `{{MAIN_BRANCH}}`, both committed and uncommitted (run from the project root):
+
+```bash
+git diff --name-only $(git merge-base {{MAIN_BRANCH}} HEAD) HEAD
+git diff --name-only HEAD
+```
+
+**Exclude**: lockfiles, `*.md`, generated/build output, vendored dependencies, `scripts/`, and your project's central constants/config module(s) themselves.
+
+## What to look for
+
+The principle: **a number or string that appears in the middle of the code without a name** — the reader has to guess what it means, or the value is used in more than one place so it's prone to drifting apart when changed. That should be a named constant. Example categories (not a closed list — use judgement):
+
+- **Hardcoded key / identifier** — a literal key, slot name, or storage/cache key used in code that should come from a single named constant.
+- **Repeated path / URL / endpoint string** — a literal route, path, or endpoint used repeatedly (>2x) that should become a constant.
+- **Config / business number** — price, timeout, limit, retry count, threshold, percentage — anything with business meaning.
+- **"Magic" literal that is not self-explanatory** — a number or string whose meaning isn't clear from context (e.g. `* 86400000`, `status == 2`, a bare version string, `slice(0, 7)`) — give it a name that explains its intent.
+- **Duplicated value** — the same literal appearing in >2 places. Even if each one is "clear", the duplication is the problem: extract it into a single constant.
+- **String enum / limited value set** — status, type, role, or key that has a limited set of values and is compared via string literals.
+
+The test: if someone reads that line and has to ask *"what is this number/string actually?"* or *"why is the value this?"* — it's a constant candidate.
+
+## What is NOT a violation (ignore)
+
+- A string/number used once and self-explanatory in its context.
+- Pure UI/presentation values (display text, styling) — not business config.
+- `0`/`1`/`-1` as index, increment, or boolean-like.
+
+## Output
+
+For each violation, state `file:line`, the value found, and the suggested replacement constant (existing or new). If no files changed or there are no violations, answer `PASS`.

@@ -1,0 +1,34 @@
+Review the files changed in this branch and apply simplifications where any are a clear improvement. Quality only — do NOT hunt for bugs or change behavior.
+
+## Principles
+
+- **Preserve functionality**: Never change what the code does. Output and behavior must be identical.
+- **Follow project conventions**: Adhere to `AGENTS.md` and any project-level rules. Tone, naming, and idioms must match the surrounding code.
+- **Improve clarity**: Reduce unnecessary nesting & complexity, remove dead code and duplication, fix unclear variable/function names, consolidate related logic, remove comments that just restate the code. Avoid deeply nested conditionals and nested ternaries — prefer early returns or plain `if`/`else`.
+- **Keep balance**: Don't over-simplify. Avoid "clever" solutions that are hard to read. Don't merge unrelated concerns. Don't remove abstractions that help. Readability over line count.
+- **No change for change's sake**: If a file has no meaningful improvement, leave it as-is and say so.
+
+## Scope
+
+Files changed in this branch relative to the merge-base with `{{MAIN_BRANCH}}`, both committed and uncommitted. Determine the list yourself (run from the project root):
+
+```bash
+git diff --name-only $(git merge-base {{MAIN_BRANCH}} HEAD) HEAD   # committed in this branch
+git diff --name-only HEAD                                          # uncommitted
+```
+
+**Exclude**: lockfiles, `*.md` (including `docs/STATUS.md`), generated/build output, vendored dependencies, and `scripts/`. Do NOT touch files outside this changed set.
+
+## Process
+
+1. Compute the changed-file list above, then read each in-scope file.
+2. Identify concrete improvements: dead code, unclear names, redundant logic, inconsistent patterns, unnecessary comments, over-nesting.
+3. Apply changes **one file at a time**.
+4. Verify: `{{BUILD_CMD}}` must pass with **zero errors**. If the project has a lint command, run `{{LINT_CMD}}` too.
+5. Summarize what was changed & why (and mention files left untouched on purpose).
+
+## Guardrails
+
+Do NOT add features, change public API/signatures, or refactor code outside the changed set. When in doubt, choose the smaller, more obvious edit.
+
+If no files changed, answer `PASS: no changed files`.

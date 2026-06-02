@@ -1,0 +1,16 @@
+Check whether `docs/STATUS.md` needs to be updated before pushing. `STATUS.md` is a push journal — every push that has meaningful changes should be reflected there.
+
+## Check (run from the project root)
+
+```bash
+git diff --cached --name-only                                      # staged files
+git diff --name-only $(git merge-base {{MAIN_BRANCH}} HEAD) HEAD    # committed in this branch
+```
+
+## Rules
+
+- If `docs/STATUS.md` **is** in the staged changes → answer `PASS: STATUS.md updated and ready for push.`
+- If there are meaningful code changes (source code, not docs/config) in this branch **but** `docs/STATUS.md` was not updated along with them → answer `WARNING: docs/STATUS.md needs to be updated before push` and briefly note what changes are not yet recorded.
+- If there are no meaningful code changes (e.g. only docs/config) → answer `PASS: no code changes requiring a STATUS.md entry.`
+
+This is a read-only check. Do NOT edit `docs/STATUS.md` yourself — just report its status.
