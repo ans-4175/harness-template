@@ -48,6 +48,12 @@ After phases 1 & 2 pass, **update `docs/STATUS.md`** with a new journal entry an
 
 If all phases pass → push.
 
+> **Claude Code users:** this template also ships native integration in `.claude/`.
+> Run the lint in-session with `/agent-lint` (or the individual `/check-constants`,
+> `/check-simplify` commands) instead of the bash script. A `PreToolUse` hook also
+> **blocks `git push`** automatically if you're pushing code without a `docs/STATUS.md`
+> update — so you can't forget step 3.
+
 ### Deployment
 - **Only deploy when the user explicitly asks.** Never deploy on your own initiative.
 - When the user requests a deploy:

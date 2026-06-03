@@ -65,6 +65,35 @@ It is **language-neutral**: build/lint/deploy commands are placeholders you fill
 - The script's pass/fail is driven by each AI CLI's **exit code**, not by parsing the text — read the output yourself for the actual findings.
 - The build/lint/deploy commands themselves live in the prompts and `AGENTS.md`, not hardcoded in the orchestrator, which is why the script is language-neutral.
 
+## Claude Code integration (optional)
+
+If your agent is **Claude Code**, the template also ships a native `.claude/` layer so you don't
+have to spawn a nested CLI. It reuses the same assets — the slash commands point straight at the
+existing `.prompt` files (one source of truth), and the push guard is a deterministic version of
+`check-status.prompt`.
+
+```
+.claude/
+├── settings.json                # PreToolUse hook (committed — team config)
+├── hooks/
+│   └── pre-push-guard.sh         # blocks `git push` if code changes lack a STATUS.md update
+└── commands/
+    ├── agent-lint.md             # /agent-lint — runs all 3 phases in-session
+    ├── check-constants.md        # /check-constants — reads scripts/check-constants.prompt
+    └── check-simplify.md         # /check-simplify — reads scripts/check-simplify.prompt
+```
+
+- **`/agent-lint`** runs the three phases natively in the current session (no nested `claude -p`).
+- **The hook** fires on every `Bash` tool call; if the command is a `git push` and there are code
+  changes not accompanied by a `docs/STATUS.md` update, it blocks with exit code 2 and tells the
+  agent what to fix. It **fails open** — if `jq`/`git`/the main branch aren't available, the push
+  proceeds rather than getting stuck.
+- Requires **`jq`** on PATH for the hook. `.claude/settings.local.json` (personal overrides) is
+  gitignored; `.claude/settings.json` is committed.
+
+The two modes coexist: use the **bash harness** (`scripts/agent-lint.sh`) in CI or with other
+agent CLIs, and the **`.claude/` layer** when working inside Claude Code.
+
 ## Customizing
 
 - **Add or remove a phase:** add another `.prompt` file and a `run_prompt` line in `agent-lint.sh`.
