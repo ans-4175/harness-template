@@ -48,9 +48,26 @@ run_prompt() {
     echo ""
 }
 
+# Run a deterministic shell check (no AI). Its exit code drives pass/fail.
+run_check() {
+    local label="$1"; shift
+
+    echo "📋 $label"
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+
+    local exit_code=0
+    "$@" || exit_code=$?
+
+    if [[ $exit_code -ne 0 ]]; then
+        echo "⚠️  $label failed (exit $exit_code)"
+        FAILED=1
+    fi
+    echo ""
+}
+
 run_prompt "Phase 1/3: Magic Strings & Numbers Audit" "$SCRIPT_DIR/check-constants.prompt"
 run_prompt "Phase 2/3: Simplify Changed Files"        "$SCRIPT_DIR/check-simplify.prompt"
-run_prompt "Phase 3/3: STATUS.md Update Check"        "$SCRIPT_DIR/check-status.prompt"
+run_check  "Phase 3/3: STATUS.md Update Check"        bash "$SCRIPT_DIR/check-status.sh"
 
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 if [[ $FAILED -eq 0 ]]; then

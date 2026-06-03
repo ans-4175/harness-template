@@ -1,11 +1,8 @@
 #!/usr/bin/env bash
-# PreToolUse(Bash) guard — blocks `git push` if code changes are being pushed
-# without a docs/STATUS.md update. Deterministic mirror of
-# scripts/check-status.prompt (no AI call). Fails OPEN: if anything is missing
-# (jq, git, main branch), it lets the push through rather than blocking work.
+# PreToolUse(Bash) guard — blocks `git push` when docs/STATUS.md must be updated.
+# Delegates the actual check to scripts/check-status.sh (single source of truth).
+# Fails OPEN: if jq / the check script aren't available, the push proceeds.
 set -uo pipefail
-
-MAIN_BRANCH="{{MAIN_BRANCH}}"
 
 # The command Claude is about to run arrives as JSON on stdin.
 payload=$(cat)
@@ -18,34 +15,13 @@ case "$cmd" in
   *) exit 0 ;;
 esac
 
-cd "${CLAUDE_PROJECT_DIR:-.}" 2>/dev/null || exit 0
+proj="${CLAUDE_PROJECT_DIR:-.}"
+check="$proj/scripts/check-status.sh"
+[[ -x "$check" ]] || exit 0   # fail open if the deterministic check isn't present
 
-# Files in this push: committed on the branch vs main, plus staged + unstaged.
-base=$(git merge-base "$MAIN_BRANCH" HEAD 2>/dev/null || true)
-if [[ -n "$base" ]]; then
-  changed=$(git diff --name-only "$base" HEAD; git diff --name-only HEAD; git diff --cached --name-only)
-else
-  changed=$(git diff --name-only HEAD; git diff --cached --name-only)
-fi
-changed=$(printf '%s\n' "$changed" | sed '/^$/d' | sort -u)
-
-# STATUS.md already part of this push? All good.
-if printf '%s\n' "$changed" | grep -q 'docs/STATUS\.md'; then
-  exit 0
-fi
-
-# Any meaningful code change? (exclude docs, markdown, scripts, .claude, config/meta, lockfiles)
-code=$(printf '%s\n' "$changed" | grep -Ev \
-  '(^docs/|\.md$|^scripts/|^\.claude/|(^|/)(\.gitignore|\.gitattributes|\.editorconfig|LICENSE)$|(^|/)(package-lock\.json|yarn\.lock|pnpm-lock\.yaml|Cargo\.lock|go\.sum|composer\.lock|poetry\.lock|Gemfile\.lock)$)' || true)
-
-if [[ -n "$code" ]]; then
-  {
-    echo "Push blocked: code changes detected but docs/STATUS.md is not part of this push."
-    echo "Append a push-journal entry to docs/STATUS.md (see AGENTS.md §3), commit it, then push again."
-    echo "Changed code files:"
-    printf '%s\n' "$code" | sed 's/^/  - /'
-  } >&2
+# Exit 1 from the check = STATUS.md update required → block the push (exit 2).
+if ! reason=$("$check" 2>&1); then
+  echo "$reason" >&2
   exit 2
 fi
-
 exit 0

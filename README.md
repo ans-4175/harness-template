@@ -3,7 +3,7 @@
 A drop-in set of guardrails for AI coding agents working on any project. It gives an agent three things:
 
 1. **`AGENTS.md`** — the rules an agent must follow (push/deploy flow, commit reasoning logs, status protocol).
-2. **`scripts/agent-lint.sh`** — a pre-push lint that feeds three review prompts to an AI CLI: a magic-string audit, a simplify pass, and a STATUS.md check.
+2. **`scripts/agent-lint.sh`** — a pre-push lint: two AI review phases (a magic-string audit and a simplify pass) plus a deterministic STATUS.md gate.
 3. **`docs/STATUS.md`** — a push journal so the next agent (or you) knows what was pushed and why.
 
 It is **language-neutral**: build/lint/deploy commands are placeholders you fill in once.
@@ -17,10 +17,10 @@ It is **language-neutral**: build/lint/deploy commands are placeholders you fill
 ├── docs/
 │   └── STATUS.md                # push journal (seeded, ready to append to)
 └── scripts/
-    ├── agent-lint.sh            # orchestrator: runs the 3 prompts via an AI CLI
-    ├── check-constants.prompt   # phase 1 — magic strings/numbers audit (read-only)
-    ├── check-simplify.prompt    # phase 2 — simplify changed files, then verify build
-    └── check-status.prompt      # phase 3 — verify STATUS.md is staged for this push
+    ├── agent-lint.sh            # orchestrator: 2 AI phases + the deterministic status gate
+    ├── check-constants.prompt   # phase 1 — magic strings/numbers audit (read-only, AI)
+    ├── check-simplify.prompt    # phase 2 — simplify changed files, then verify build (AI)
+    └── check-status.sh          # phase 3 — deterministic STATUS.md gate (no AI; exit 1 = must update)
 ```
 
 ## Setup
@@ -50,7 +50,7 @@ It is **language-neutral**: build/lint/deploy commands are placeholders you fill
    ```
    (Drop the `''` after `-i` on Linux/GNU sed.)
 
-3. **Make the script executable:** `chmod +x scripts/agent-lint.sh`
+3. **Make the scripts executable:** `chmod +x scripts/*.sh .claude/hooks/*.sh`
 4. **Install an AI CLI** the script can call — it auto-detects `pi`, `claude`, or `opencode` (first one found wins).
 5. **Recreate the symlink** if your copy method didn't preserve it:
    ```bash
@@ -60,17 +60,17 @@ It is **language-neutral**: build/lint/deploy commands are placeholders you fill
 
 ## How it works
 
-- Run `bash scripts/agent-lint.sh` before pushing. It runs the 3 phases sequentially and streams each prompt's output straight to your terminal.
-- Phases 1 & 3 are **read-only reports**. Phase 2 **edits** changed files (simplifications only) and verifies the build.
-- The script's pass/fail is driven by each AI CLI's **exit code**, not by parsing the text — read the output yourself for the actual findings.
+- Run `bash scripts/agent-lint.sh` before pushing. It runs the 3 phases sequentially and streams each phase's output straight to your terminal.
+- **Phase 1** (constants) is a read-only AI report. **Phase 2** (simplify) is an AI pass that **edits** changed files (simplifications only) and verifies the build. **Phase 3** is a deterministic shell gate — `scripts/check-status.sh` — that exits 1 if there are code changes without a `docs/STATUS.md` update, meaning you **must** update STATUS.md before pushing.
+- For phases 1 & 2 the pass/fail follows the AI CLI's **exit code** (read the output yourself for the actual findings); phase 3 has a real deterministic exit code that genuinely gates the push.
 - The build/lint/deploy commands themselves live in the prompts and `AGENTS.md`, not hardcoded in the orchestrator, which is why the script is language-neutral.
 
 ## Claude Code integration (optional)
 
 If your agent is **Claude Code**, the template also ships a native `.claude/` layer so you don't
 have to spawn a nested CLI. It reuses the same assets — the slash commands point straight at the
-existing `.prompt` files (one source of truth), and the push guard is a deterministic version of
-`check-status.prompt`.
+existing `.prompt` files (one source of truth), and the push guard delegates to the same
+`scripts/check-status.sh` used by the bash harness.
 
 ```
 .claude/
