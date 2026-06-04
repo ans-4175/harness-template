@@ -46,7 +46,7 @@ in order. Stop at the first match:
 | 4 | `netlify.toml` exists OR `"netlify"` in `package.json` scripts | **Netlify** → load `netlify-deploy` skill |
 | 5 | `Dockerfile` exists | **Docker** → load `docker-deploy` skill |
 
-Once detected, read the skill file (`~/.agents/skills/<name>/SKILL.md`) completely.
+Once detected, read the skill file (`.agents/skills/<name>/SKILL.md`) completely.
 
 ### 1.2 If no platform detected
 
@@ -252,7 +252,7 @@ It is NOT a commit log or deploy log.
 ## 6. Deploy Skills (load on-demand)
 
 When a deploy platform is detected or the user asks to deploy, load the corresponding
-skill from `~/.agents/skills/`:
+skill from `.agents/skills/`:
 
 | Platform | Skill | When to load |
 |----------|-------|--------------|
@@ -263,7 +263,7 @@ skill from `~/.agents/skills/`:
 | Docker (build + push) | `docker-deploy` | Auto-detect or user asks |
 
 **How to use a skill:**
-1. Read `~/.agents/skills/<skill-name>/SKILL.md`
+1. Read `.agents/skills/<skill-name>/SKILL.md`
 2. Follow the numbered steps in order
 3. Each skill covers: detection, setup, config, secrets, build, deploy, verify, rollback
 4. If a skill has its own `references/` folder, consult those files for platform-specific
