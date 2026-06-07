@@ -1,0 +1,8 @@
+# GitHub Issue chooser config.
+# Docs: https://docs.github.com/en/communities/using-templates-to-encourage-useful-issues-and-pull-requests/configuring-issue-templates-for-your-repository
+
+blank_issues_enabled: false
+contact_links:
+  - name: 💬 Questions & how-to
+    url: https://github.com/anshori/agent-template/discussions
+    about: Use GitHub Discussions for usage questions, comparisons, and "which skill do I need" — keeps the issue tracker focused on bugs and concrete proposals.

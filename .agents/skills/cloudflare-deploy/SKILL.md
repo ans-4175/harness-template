@@ -1,3 +1,7 @@
+---
+description: Deploy to Cloudflare Workers (API/backend) or Pages (static/full-stack). Covers setup, config, secrets, deploy, verify, and rollback. Auto-detected when wrangler.toml or wrangler.jsonc exists.
+---
+
 # Cloudflare Deploy — Workers & Pages
 
 Deploy to Cloudflare Workers (API/backend) or Pages (static/full-stack). Covers

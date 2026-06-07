@@ -1,3 +1,7 @@
+---
+description: Build a Docker image from the project and push it to a container registry (Docker Hub, GHCR, or others). Covers setup, config, build, push, verify, and rollback. Auto-detected when Dockerfile exists.
+---
+
 # Docker Deploy — Build & Push
 
 Build a Docker image from the project and push it to a container registry

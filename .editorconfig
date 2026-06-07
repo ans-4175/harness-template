@@ -1,0 +1,66 @@
+# EditorConfig — maintain consistent coding styles across editors.
+# Docs: https://editorconfig.org
+# Plugin index: https://editorconfig.org/#download
+#
+# This file lives at the repo root and applies to the whole tree.
+
+root = true
+
+# ───────────────────────────── defaults
+[*]
+charset = utf-8
+end_of_line = lf
+indent_style = space
+indent_size = 2
+trim_trailing_whitespace = true
+insert_final_newline = true
+max_line_length = 100
+
+# ───────────────────────────── documentation
+# Two trailing spaces in Markdown = hard line break, so leave them alone.
+[*.md]
+trim_trailing_whitespace = false
+
+# ───────────────────────────── shell
+[*.sh]
+indent_size = 2
+
+# ───────────────────────────── Makefiles require literal tabs
+[Makefile]
+indent_style = tab
+
+# ───────────────────────────── common web stacks
+[*.{js,jsx,ts,tsx,mjs,cjs}]
+indent_size = 2
+
+[*.{html,css,scss,sass}]
+indent_size = 2
+
+# ───────────────────────────── other languages
+[*.py]
+indent_size = 4
+max_line_length = 100
+
+[*.go]
+indent_style = tab
+indent_size = 4
+
+[*.rs]
+indent_size = 4
+
+# ───────────────────────────── data / config
+[*.{json,json5,jsonc}]
+indent_size = 2
+
+[*.{yml,yaml}]
+indent_size = 2
+
+[*.toml]
+indent_size = 4
+
+# ───────────────────────────── lockfiles — formatter-owned, leave alone
+[{package-lock.json,yarn.lock,pnpm-lock.yaml,bun.lockb,Cargo.lock,go.sum,composer.lock,poetry.lock,Gemfile.lock,*.lock,*.sum}]
+insert_final_newline = unset
+trim_trailing_whitespace = unset
+indent_style = unset
+indent_size = unset

@@ -1,3 +1,7 @@
+---
+description: Deploy to Fly.io as lightweight Firecracker microVMs. Good for full-stack apps, APIs, workers, and databases. Covers setup, config, secrets, deploy, verify, scale, and rollback. Auto-detected when fly.toml exists.
+---
+
 # Fly.io Deploy
 
 Deploy to Fly.io — runs apps as lightweight VMs (Firecracker microVMs). Good for

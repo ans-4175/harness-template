@@ -1,3 +1,7 @@
+---
+description: Deploy to Netlify for static sites, serverless functions, and form handling. Simple setup with generous free tier. Covers setup, config, secrets, deploy, verify, and rollback. Auto-detected when netlify.toml exists.
+---
+
 # Netlify Deploy
 
 Deploy to Netlify for static sites, serverless functions, and form handling.

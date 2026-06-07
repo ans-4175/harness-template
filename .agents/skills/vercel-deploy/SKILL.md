@@ -1,3 +1,7 @@
+---
+description: Deploy to Vercel for static sites, serverless functions, and full-stack frameworks (Next.js, SvelteKit, Astro, Nuxt, Remix). Covers setup, config, secrets, deploy, verify, and rollback. Auto-detected when vercel.json exists.
+---
+
 # Vercel Deploy
 
 Deploy to Vercel for static sites, serverless functions, and full-stack frameworks

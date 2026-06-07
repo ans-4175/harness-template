@@ -30,9 +30,10 @@ if printf '%s\n' "$changed" | grep -q 'docs/STATUS\.md'; then
   exit 0
 fi
 
-# Any meaningful code change? (exclude docs, markdown, scripts, .claude, config/meta, lockfiles)
+# Any meaningful code change? (exclude docs, markdown, scripts, .claude, .pi, .github,
+# config/meta, lockfiles) — all of these are template infrastructure, not project code.
 code=$(printf '%s\n' "$changed" | grep -Ev \
-  '(^docs/|\.md$|^scripts/|^\.claude/|(^|/)(\.gitignore|\.gitattributes|\.editorconfig|LICENSE)$|(^|/)(package-lock\.json|yarn\.lock|pnpm-lock\.yaml|Cargo\.lock|go\.sum|composer\.lock|poetry\.lock|Gemfile\.lock)$)' || true)
+  '(^docs/|\.md$|^scripts/|^\.claude/|^\.pi/|^\.github/|(^|/)(\.gitignore|\.gitattributes|\.editorconfig|LICENSE)$|(^|/)(package-lock\.json|yarn\.lock|pnpm-lock\.yaml|Cargo\.lock|go\.sum|composer\.lock|poetry\.lock|Gemfile\.lock)$)' || true)
 
 if [[ -z "$code" ]]; then
   echo "PASS: no code changes requiring a STATUS.md entry."
