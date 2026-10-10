@@ -5,8 +5,8 @@
 ## Type of change
 
 - [ ] Bug fix (no behavior change for users)
-- [ ] New skill / hook / script
-- [ ] Rule or section change in `AGENTS.md`
+- [ ] New hook / script / skill
+- [ ] Rule or section change in `AGENTS.md` or `docs/`
 - [ ] Documentation only
 - [ ] Refactor (no behavior change)
 - [ ] Breaking change (call out below)
@@ -19,22 +19,22 @@ Closes #
 
 ## Changes
 
-<!-- Bulleted, scannable list of what changed. For new skills, include the directory name and description. -->
+<!-- Bulleted, scannable list of what changed. For a new skill, include its directory and description. -->
 
 -
 
 ## Test plan
 
-<!-- How you verified it works. For skill changes, mention which agent you tested with. -->
+<!-- How you verified it works. For hook or script changes, mention which agent you tested with. -->
 
 - [ ] Read `docs/STATUS.md` before starting
 - [ ] If a code change: ran `bash scripts/agent-lint.sh`
-- [ ] Verified the build / deploy steps the lint references
-- [ ] Smoke-tested the new skill or hook end-to-end
+- [ ] Verified the build and lint steps the harness references
+- [ ] Smoke-tested the new hook, script, or skill end-to-end
 
 ## Reasoning
 
-<!-- Mirrors AGENTS.md §3 — the commit-message reasoning log. The "why" matters as much as the "what". -->
+<!-- Mirrors AGENTS.md §3, the commit-message reasoning log. The "why" matters as much as the "what". -->
 
 - **What done:**
 - **What next:**
@@ -43,6 +43,6 @@ Closes #
 ## Checklist
 
 - [ ] Followed the rules in `AGENTS.md`
-- [ ] Updated `docs/STATUS.md` if this PR is part of a push (per §4)
+- [ ] Added a handoff record to `docs/STATUS.md` (AGENTS.md §5), and a `noted` entry in `docs/LESSONS.md` if the work produced a reusable correction (§6)
 - [ ] No secrets / `.env` / credentials committed
-- [ ] Files in `.claude/`, `.agents/skills/`, `scripts/` match the conventions used elsewhere in the repo
+- [ ] Files in `.claude/`, `.pi/`, `scripts/` match the conventions used elsewhere in the repo

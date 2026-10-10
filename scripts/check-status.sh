@@ -3,8 +3,10 @@
 # Used by scripts/agent-lint.sh (Phase 3) and .claude/hooks/pre-push-guard.sh.
 #
 # Exit 0 = OK to push.
-# Exit 1 = code changes present but docs/STATUS.md not part of this push → you MUST
-#          update docs/STATUS.md before pushing.
+# Exit 1 = code changes present but no STATUS file is part of this push → you MUST
+#          add a handoff record before pushing (AGENTS.md §5).
+#
+# "STATUS file" = docs/STATUS.md, or docs/status/<domain>.md in per-domain mode.
 #
 # Fails OPEN if git is unavailable / not a repo (exits 0 rather than blocking work).
 set -uo pipefail
@@ -24,16 +26,16 @@ else
 fi
 changed=$(printf '%s\n' "$changed" | sed '/^$/d' | sort -u)
 
-# STATUS.md already part of this push? All good.
-if printf '%s\n' "$changed" | grep -q 'docs/STATUS\.md'; then
-  echo "PASS: docs/STATUS.md is updated and part of this push."
+# A STATUS file already part of this push? All good. Templates (_TEMPLATE.md) don't count.
+if printf '%s\n' "$changed" | grep -Eq '^docs/(STATUS\.md|status/[^/_][^/]*\.md)$'; then
+  echo "PASS: a STATUS file is updated and part of this push."
   exit 0
 fi
 
-# Any meaningful code change? (exclude docs, markdown, scripts, .claude, .pi, .github,
+# Any meaningful code change? (exclude docs, markdown, scripts, .agents, .claude, .pi, .github,
 # config/meta, lockfiles) — all of these are template infrastructure, not project code.
 code=$(printf '%s\n' "$changed" | grep -Ev \
-  '(^docs/|\.md$|^scripts/|^\.claude/|^\.pi/|^\.github/|(^|/)(\.gitignore|\.gitattributes|\.editorconfig|LICENSE)$|(^|/)(package-lock\.json|yarn\.lock|pnpm-lock\.yaml|Cargo\.lock|go\.sum|composer\.lock|poetry\.lock|Gemfile\.lock)$)' || true)
+  '(^docs/|\.md$|^scripts/|^\.agents/|^\.claude/|^\.pi/|^\.github/|(^|/)(\.gitignore|\.gitattributes|\.editorconfig|LICENSE)$|(^|/)(package-lock\.json|yarn\.lock|pnpm-lock\.yaml|Cargo\.lock|go\.sum|composer\.lock|poetry\.lock|Gemfile\.lock)$)' || true)
 
 if [[ -z "$code" ]]; then
   echo "PASS: no code changes requiring a STATUS.md entry."
@@ -42,8 +44,8 @@ fi
 
 {
   echo "WARNING: docs/STATUS.md must be updated before pushing."
-  echo "Code changes are present but docs/STATUS.md is not part of this push."
-  echo "→ Append a push-journal entry to docs/STATUS.md (see AGENTS.md §3), stage/commit it, then retry."
+  echo "Code changes are present but no STATUS file (docs/STATUS.md or docs/status/<domain>.md) is part of this push."
+  echo "→ Add a handoff record (see AGENTS.md §5), stage/commit it, then retry."
   echo "Changed code files:"
   printf '%s\n' "$code" | sed 's/^/  - /'
 } >&2

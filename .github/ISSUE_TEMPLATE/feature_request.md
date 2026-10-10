@@ -20,11 +20,11 @@ assignees: []
 
 ### Scope of change
 
-- [ ] `AGENTS.md` (rules)
-- [ ] New skill in `.agents/skills/`
+- [ ] `AGENTS.md` / `CONTRIBUTING.md` (rules)
+- [ ] New skill (`.agents/skills/`)
 - [ ] New script in `scripts/`
 - [ ] New command / hook (`.claude/` or `.pi/`)
-- [ ] `README.md` / `docs/`
+- [ ] `README.md` / `docs/` (STATUS, LESSONS, QA, DOMAINS)
 - [ ] Other: ___
 
 ## Alternatives considered

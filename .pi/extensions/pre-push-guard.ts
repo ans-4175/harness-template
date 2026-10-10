@@ -2,7 +2,7 @@
  * Pre-push guard — Pi extension
  *
  * Mirrors `.claude/hooks/pre-push-guard.sh` for the Pi agent. Blocks `git push`
- * when `docs/STATUS.md` has not been updated this push (per AGENTS.md §2 & §4).
+ * when `docs/STATUS.md` has not been updated this push (per AGENTS.md §4 & §5).
  *
  * Delegates the actual decision to `scripts/check-status.sh` — the same single
  * source of truth that the Claude Code hook uses, so both agents enforce the
@@ -54,7 +54,7 @@ export default function (pi: ExtensionAPI) {
 		const reason = result.stderr.trim() || "docs/STATUS.md must be updated before pushing.";
 
 		if (ctx.hasUI) {
-			ctx.ui.notify("Push blocked: docs/STATUS.md needs a journal entry", "warning");
+			ctx.ui.notify("Push blocked: docs/STATUS.md needs a handoff record", "warning");
 		}
 		return { block: true, reason };
 	});

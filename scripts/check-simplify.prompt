@@ -17,7 +17,7 @@ git diff --name-only $(git merge-base {{MAIN_BRANCH}} HEAD) HEAD   # committed i
 git diff --name-only HEAD                                          # uncommitted
 ```
 
-**Exclude**: lockfiles, `*.md` (including `docs/STATUS.md`), generated/build output, vendored dependencies, and `scripts/`. Do NOT touch files outside this changed set.
+**Exclude**: lockfiles, `*.md` (including `docs/`), generated/build output, vendored dependencies, and `scripts/`. Do NOT touch files outside this changed set.
 
 ## Process
 
